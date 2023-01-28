@@ -19,3 +19,30 @@ export const getMovies = async (req, res) => {
     const data = await ModelMovie.find()
     return res.status(200).json(data)
 }
+
+export const getMovie = async (req, res) => {
+    const { id } = req.params
+    const data = await ModelMovie.findById(id)
+    return res.status(200).json(data)
+}
+
+export const updateMovie = async (req, res) => {
+    try{
+        const { id } = req.params
+        const { ...data } = req.body
+        await ModelMovie.findByIdAndUpdate(id, data, {new: true})
+        return res.status(200).json({msg: `Movie updated successfully`})
+    }catch(err){
+        return res.status(500).json({msg: err.message});
+    }
+}
+
+export const removeMovie = async (req, res) => {
+    try{
+        const { id } = req.params
+        await ModelMovie.findByIdAndRemove(id)
+        return res.status(200).json({msg: 'Movie deleted successfully'})
+    }catch(err){
+        return res.status(500).json({msg: err.message});
+    }
+}
