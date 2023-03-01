@@ -1,9 +1,11 @@
 import Servidor from './src/server.js';
-import { config } from 'dotenv';
+import { dbconnection } from './src/config/database.js';
 
-if(process.env.NODE_ENV !== 'production'){
-    config()
-}
+import dotenv from 'dotenv'; dotenv.config()
 
 const server = new Servidor()
-server.listen()
+
+async function main(){
+    await server.listen()
+    await dbconnection()
+}; main()

@@ -2,19 +2,17 @@ import { Schema, model } from 'mongoose'
 
 const schemaMovie = new Schema(
     {
-        NOMBRE_DE_PELICULA: { type: String },
+        NOMBRE_DE_PELICULA: { type: String, uppercase: true, trim: true },
 
-        FECHA_DE_ESTRENO: { type: Number },
+        FECHA_DE_ESTRENO: { type: Number, trim: true },
         
-        IMG_DE_PELICULA: { type: String },
+        IMG_DE_PELICULA: { type: String, trim: true },
 
-        PTS_DE_PELICULA: { type: String },
+        PTS_DE_PELICULA: { type: String, trim: true },
+    },
+    {
+        versionKey: false
     }
 )
-
-schemaMovie.methods.toJSON = function () {
-    const {__v, ...data}=this.toObject();
-    return data;
-}
 
 export default model('collectionMovie', schemaMovie)

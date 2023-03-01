@@ -1,15 +1,12 @@
 import express from 'express';
 import cors from 'cors';
 
-import { dbc } from './config/database.js';
 import rutas from './routes/index.js'
 
 export default class Servidor{
     constructor(){
         this.app = express();
         this.port = process.env.PORT
-
-        dbc()
 
         this.middlewares()
         this.routes()
