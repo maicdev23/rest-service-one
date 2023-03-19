@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import path from 'path';
 
 import rutas from './routes/index.js'
 
@@ -15,6 +16,7 @@ export default class Servidor{
     middlewares(){
         this.app.use(cors())
         this.app.use(express.json())
+        this.app.use('/tmp', express.static(path.resolve('tmp')))
     }
 
     routes(){
