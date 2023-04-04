@@ -7,6 +7,11 @@ const schemaUser = new Schema(
         username: { type: String, trim: true },
 
         password: { type: String, trim: true },
+
+        rol: {
+            type: Schema.Types.String,
+            ref: 'collectionUserRol'
+        }
     },
     {
         versionKey: false
