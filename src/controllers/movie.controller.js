@@ -13,7 +13,7 @@ export const addMovie = async (req, res) => {
         movie.PATH_PRIVATE = req.file.path
         movie.MIMETYPE_FILE = req.file.mimetype
         await movie.save()
-        return res.status(201).json({msg: 'Movie created successfully'})
+        return res.status(201).json({msg: 'Movie created successfully', movie})
     }catch(err){
         return res.status(500).json({msg: err.message});
     }
