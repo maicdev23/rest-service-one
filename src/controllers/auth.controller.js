@@ -8,9 +8,14 @@ export const authUser = async (req, res) => {
     if(!existe){
         return res.status(404).json({ msg: 'Usuario no encontrado' })
     }else{
-        const token = jwt.sign({id: existe._id}, process.env.JWT, { expiresIn: 60*60*24 })
-        return res.status(200).json({ msg: 'Welcome', auth: true, accessToken: token })
-    }  
+        const match = await existe.decryptPassword(password)
+        if(!match){
+            return res.status(404).json({ msg: 'Contraseña incorrecta' })
+        }else{
+            const token = jwt.sign({id: existe._id}, process.env.JWT, { expiresIn: 60*60*24 })
+            return res.status(200).json({ msg: 'Welcome', auth: true, accessToken: token, role: existe.rol })
+        }
+    } 
 }
 
 export const indexUser = async (req, res) => {

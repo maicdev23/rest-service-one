@@ -8,6 +8,7 @@ export const addUser = async (req, res) => {
             return res.status(400).json({msg: `The user ${existe.fullname} already exists`})
         }
         const user = new ModelUser(data)
+        user.password = await user.encryptPassword(data.password)
         await user.save()
         return res.status(201).json({msg: 'User created successfully', user})
     }catch(err){
