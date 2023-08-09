@@ -22,7 +22,7 @@ export default class Servidor{
     routes(){
         this.app.use('/api/v1', rutas)
         this.app.use((req, res) => {
-            return res.status(404).json({ messages: 'Page not found' });
+            return res.status(404).json({ message: 'Resource not found' });
         })
     }
 

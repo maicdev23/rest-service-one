@@ -2,17 +2,22 @@ import { Schema, model } from 'mongoose'
 
 const schemaMovie = new Schema(
     {
-        NOMBRE_DE_PELICULA: { type: String, uppercase: true, trim: true },
+        descripcion: { type: String, uppercase: true, trim: true },
 
-        PTS_DE_PELICULA: { type: String, trim: true },
+        calificacion: { type: String, trim: true },
 
-        FECHA_DE_ESTRENO: { type: Number, trim: true },
+        fechaEstreno: { type: String, trim: true },
 
         MIMETYPE_FILE: { type: String, trim: true },
 
         PATH_PRIVATE: { type: String, trim: true },
         
         PATH_PUBLIC: { type: String, trim: true },
+
+        USER: {
+            type: Schema.Types.ObjectId,
+            ref: 'collectionUser'
+        }
     },
     {
         versionKey: false

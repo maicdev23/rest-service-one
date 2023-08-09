@@ -7,8 +7,7 @@ export const addRol = async (req, res) => {
         if(existe){
             return res.status(400).json({msg: `The rol ${existe.rol} already exists`})
         }
-        const rol = new ModelRol(data)
-        await rol.save()
+        const rol = new ModelRol(data); await rol.save()
         return res.status(201).json({msg: 'Rol created successfully'})
     }catch(err){
         return res.status(500).json({msg: err.message});

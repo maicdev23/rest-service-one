@@ -1,14 +1,15 @@
 import ModelUser from '../models/user.model.js'
+import { encrypt } from "../helpers/bcrypt.js";
 
 export const addUser = async (req, res) => {
     try{
         const { ...data } = req.body
         const existe = await ModelUser.findOne({fullname: data.fullname})
-        if(existe){
+        if(existe)
             return res.status(400).json({msg: `The user ${existe.fullname} already exists`})
-        }
+            
         const user = new ModelUser(data)
-        user.password = await user.encryptPassword(data.password)
+        user.password = await encrypt(data.password)
         await user.save()
         return res.status(201).json({msg: 'User created successfully', user})
     }catch(err){
@@ -46,7 +47,7 @@ export const updateUser = async (req, res) => {
     }
 }
 
-export const removeUser = async (req, res) => {
+export const deleteUser = async (req, res) => {
     try{
         const { id } = req.params
         await ModelUser.findByIdAndRemove(id)
