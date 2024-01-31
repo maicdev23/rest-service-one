@@ -3,8 +3,11 @@ import { Router } from "express";
 import user from "./users.routes.js";
 import movie from "./movie.routes.js";
 
-const rutas = Router()
+const router = Router()
 
-rutas.use('/', user, movie)
+router.use('/api/v1', user, movie)
+router.use('*', (req, res) => {
+    return res.status(404).json({ message: 'Resource not found' });
+})
 
-export default rutas
+export default router

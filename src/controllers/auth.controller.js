@@ -19,7 +19,7 @@ export const authUser = async (req, res) => {
     }
 }
 
-export const indexUser = async (req, res) => {
+export const mainUser = async (req, res) => {
     try {
         const user = await ModelUser.findById(req.userId, {password: 0})
         return res.status(200).json(user)

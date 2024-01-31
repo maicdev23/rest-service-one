@@ -53,7 +53,6 @@ export const deleteUser = async (req, res) => {
         await ModelUser.findByIdAndRemove(id)
         return res.status(200).json({msg: 'User deleted successfully'})
     }catch(err){
-        console.log(err)
         return res.status(500).json({msg: err.message});
     }
 }

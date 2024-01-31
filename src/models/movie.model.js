@@ -2,15 +2,13 @@ import { Schema, model } from 'mongoose'
 
 const schemaMovie = new Schema(
     {
-        descripcion: { type: String, uppercase: true, trim: true },
+        NAME: { type: String, uppercase: true, trim: true },
 
-        calificacion: { type: String, trim: true },
+        VALUE: { type: String, trim: true },
 
-        fechaEstreno: { type: String, trim: true },
+        DATE: { type: String, trim: true },
 
         MIMETYPE_FILE: { type: String, trim: true },
-
-        PATH_PRIVATE: { type: String, trim: true },
         
         PATH_PUBLIC: { type: String, trim: true },
 

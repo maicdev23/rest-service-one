@@ -1,18 +1,26 @@
-import fs from 'fs-extra'
 import ModelMovie from '../models/movie.model.js'
+
+import { initializeApp } from "firebase/app";
+import { firebaseConfig } from "../config/firebase.js";
+import { deleteObject, getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
+
+initializeApp(firebaseConfig); const storage = getStorage()
 
 export const addMovie = async (req, res) => {
     try{
         const { ...data } = req.body
-        const existe = await ModelMovie.findOne({NOMBRE_DE_PELICULA: data.NOMBRE_DE_PELICULA})
-        if(existe){
-            return res.status(400).json({msg: `The movie ${existe.NOMBRE_DE_PELICULA} already exists`})
-        }
-        const movie = new ModelMovie(data)
-        movie.PATH_PUBLIC = `${process.env.API}/${req.file.path}`
-        movie.PATH_PRIVATE = req.file.path
-        movie.MIMETYPE_FILE = req.file.mimetype
-        await movie.save()
+
+        if (!req.file || !req.file.mimetype.startsWith('image/'))
+            return res.status(400).json({ msg: 'POR FAVOR SELECCIONE UN FILE VALIDO.' });
+        
+        const storageRef = ref(storage, `archivos-nosql/${Date.now()}`)
+        const metadata = { contentType: req.file.mimetype };
+        const snapshot = await uploadBytes(storageRef, req.file.buffer, metadata)
+        const urlx = await getDownloadURL(snapshot.ref);
+
+        const movie = new ModelMovie({...data, USER: req.userId});
+        movie.PATH_PUBLIC = urlx; await movie.save()
+
         return res.status(201).json({msg: 'Movie created successfully', movie})
     }catch(err){
         return res.status(500).json({msg: err.message});
@@ -20,35 +28,68 @@ export const addMovie = async (req, res) => {
 }
 
 export const getMovies = async (req, res) => {
-    const data = await ModelMovie.find()
-    return res.status(200).json(data)
+    try{
+        const data = await ModelMovie.find({USER: req.userId})
+        return res.status(200).json(data)
+    }catch(err) {
+        return res.status(500).json({msg: err.message});
+    }
 }
 
 export const getMovie = async (req, res) => {
-    const { id } = req.params
-    const data = await ModelMovie.findById(id)
-    return res.status(200).json(data)
-}
-
-export const updateMovie = async (req, res) => {
     try{
         const { id } = req.params
-        const { ...data } = req.body
-        await ModelMovie.findByIdAndUpdate(id, data, {new: true})
-        return res.status(200).json({msg: `Movie updated successfully`})
+        const data = await ModelMovie.findById(id)
+        return res.status(200).json(data)
     }catch(err){
         return res.status(500).json({msg: err.message});
     }
 }
 
-export const removeMovie = async (req, res) => {
+export const updateMovie = async (req, res) => {
+    try{
+        const { id } = req.params; const { ...data } = req.body
+
+        const result = await ModelMovie.findById(id)
+        if(!result) return res.status(404).json({msg: 'Movie not found'})
+
+        if (!req.file || !req.file.mimetype.startsWith('image/'))
+            return res.status(400).json({ msg: 'POR FAVOR SELECCIONE UN FILE VALIDO.' });
+
+        const storageRef = ref(storage, result.PATH_PUBLIC)
+
+        const metadata = { contentType: req.file.mimetype };
+        await uploadBytes(storageRef, req.file.buffer, metadata)
+
+        const newFileUrl = await getDownloadURL(storageRef)
+        const movie = await ModelMovie.findByIdAndUpdate(id, { ...data, PATH_PUBLIC: newFileUrl })
+        return res.status(200).json({msg: `Movie updated successfully`, movie})
+    }catch(err){
+        return res.status(500).json({msg: err.message});
+    }
+}
+
+export const deleteMovie = async (req, res) => {
     try{
         const { id } = req.params
-        const result = await ModelMovie.findByIdAndRemove(id)
-        await fs.unlink(result.PATH_PRIVATE)
+        const movie = await ModelMovie.findById(id)
+        if(!movie) return res.status(404).json({msg: 'Movie not found'})
+
+        await ModelMovie.findByIdAndDelete(id)
+        const desertRef = ref(storage, movie.PATH_PUBLIC)
+        await deleteObject(desertRef)
+
         return res.status(200).json({msg: 'Movie deleted successfully'})
     }catch(err){
-        console.log(err)
+        return res.status(500).json({msg: err.message});
+    }
+}
+
+export const fullMovies = async (req, res) => {
+    try{
+        const data = await ModelMovie.find()
+        return res.status(200).json(data)
+    }catch(err){
         return res.status(500).json({msg: err.message});
     }
 }
