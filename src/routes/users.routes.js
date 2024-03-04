@@ -13,13 +13,17 @@ const rutas = Router()
 rutas.post('/auth', authUser)
 rutas.get('/main', [ verifyToken ], mainUser)
 
-rutas.post('/user', addUser)
-rutas.get('/user', getUsers)
-rutas.get('/user/:id', getUser)
-rutas.put('/user/:id', updateUser)
-rutas.delete('/user/:id', deleteUser)
+rutas.route('/user')
+    .post(addUser)
+    .get(getUsers)
 
-rutas.post('/rol', addRol)
-rutas.get('/rol', getRols)
+rutas.route('/user/:id')
+    .get(getUser)
+    .put(updateUser)
+    .delete(deleteUser)
+
+rutas.route('/rol')
+    .post(addRol)
+    .get(getRols)
 
 export default rutas

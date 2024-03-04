@@ -8,6 +8,10 @@ const schemaUser = new Schema(
 
         password: { type: String, trim: true },
 
+        telefono: { type: Number, default: 555 },
+
+        direccion: { type: String, default: 'Manta' },
+
         rol: {
             type: Schema.Types.ObjectId,
             ref: 'collectionUserRol', 
