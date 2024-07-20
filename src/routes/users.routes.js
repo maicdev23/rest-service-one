@@ -1,6 +1,6 @@
 import { Router } from "express";
 
-import { 
+import {
     addUser, deleteUser, getUser, getUsers, updateUser
 } from '../controllers/user.controller.js'
 
@@ -11,7 +11,7 @@ import { authUser, mainUser } from "../controllers/auth.controller.js";
 const rutas = Router()
 
 rutas.post('/auth', authUser)
-rutas.get('/main', [ verifyToken ], mainUser)
+rutas.get('/main', [verifyToken], mainUser)
 
 rutas.route('/user')
     .post(addUser)

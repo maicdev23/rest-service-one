@@ -12,9 +12,10 @@ const schemaUser = new Schema(
 
         direccion: { type: String, default: 'Manta' },
 
-        rol: {
+        rol_id: {
             type: Schema.Types.ObjectId,
-            ref: 'collectionUserRol', 
+            ref: 'collectionUserRol',
+            required: true
         }
     },
     {

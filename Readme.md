@@ -1,2 +1,2 @@
-### Simple rest service with nodejs, express and mongodb
+### Simple rest service with nodejs, express, mongoose and firebase
 ---
