@@ -3,22 +3,23 @@ import { Router } from "express";
 import multer from '../middlewares/uploadFile.js'
 
 import {
-    addPost, deletePost, fullPosts, getPost, getPosts, updatePost
+    addPost, deletePost, getPost, getPosts, posts, updatePost
 } from '../controllers/post.controller.js';
 
 import { verifyToken } from "../middlewares/verifyAuth.js";
+import { isPostOwner } from "../middlewares/verifyPost.js";
 
 const rutas = Router()
 
-rutas.route('/post',)
+rutas.route('/post')
     .post([verifyToken], [multer], addPost)
     .get([verifyToken], getPosts)
 
-rutas.route('/post/:id',)
-    .get(getPost)
-    .put([multer], updatePost)
-    .delete(deletePost)
+rutas.route('/post/:id')
+    .get([verifyToken, isPostOwner], getPost)
+    .put([verifyToken, isPostOwner], [multer], updatePost)
+    .delete([verifyToken, isPostOwner], deletePost)
 
-rutas.get('/posts', fullPosts)
+rutas.get('/posts', posts)
 
 export default rutas

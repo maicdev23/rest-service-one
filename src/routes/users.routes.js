@@ -4,8 +4,7 @@ import {
     addUser, deleteUser, getUser, getUsers, updateUser
 } from '../controllers/user.controller.js'
 
-import { addRol, getRols } from "../controllers/user-rol.controller.js";
-import { verifyToken } from "../middlewares/verifyAuth.js";
+import { isAdmin, verifyToken } from "../middlewares/verifyAuth.js";
 import { authUser, mainUser } from "../controllers/auth.controller.js";
 
 const rutas = Router()
@@ -13,17 +12,15 @@ const rutas = Router()
 rutas.post('/auth', authUser)
 rutas.get('/main', [verifyToken], mainUser)
 
+rutas.post('/admin', [verifyToken, isAdmin], addUser)
+
 rutas.route('/user')
     .post(addUser)
     .get(getUsers)
 
 rutas.route('/user/:id')
-    .get(getUser)
-    .put(updateUser)
-    .delete(deleteUser)
-
-rutas.route('/rol')
-    .post(addRol)
-    .get(getRols)
+    .get([verifyToken], getUser)
+    .put([verifyToken], updateUser)
+    .delete([verifyToken], deleteUser)
 
 export default rutas

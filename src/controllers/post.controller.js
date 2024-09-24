@@ -53,8 +53,7 @@ export const updatePost = async (req, res) => {
     try {
         const { id } = req.params; const { ...data } = req.body
 
-        const result = await ModelPost.findById(id)
-        if (!result) return res.status(404).json({ msg: 'Post not found' })
+        await getPost()
 
         if (!req.file) {
             await ModelPost.findByIdAndUpdate(id, data, { new: true })
@@ -91,7 +90,7 @@ export const deletePost = async (req, res) => {
     }
 }
 
-export const fullPosts = async (req, res) => {
+export const posts = async (req, res) => {
     try {
         const data = await ModelPost.find()
         return res.status(200).json(data)
